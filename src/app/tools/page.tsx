@@ -5,7 +5,7 @@ import ToolList from "@/modules/tools/components/ToolList";
 const ToolsPage = () => {
   return (
     <div className="w-full p-6 flex flex-col gap-4 h-dvh">
-      <h1 className="text-3xl font-semibold">Custom tools</h1>
+      <h1 className="text-center text-3xl font-semibold">Công cụ</h1>
       <ToolList />
     </div>
   );
