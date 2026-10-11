@@ -1,0 +1,131 @@
+// use prisma-next
+
+model TestTb {
+  id        Int      @id @default(autoincrement())
+  content   String?
+  createdAt TimestamptzString @default(now()) @map("created_at")
+
+  @@map("test_tb")
+}
+
+model User {
+  id        Uuid     @id @default(uuid())
+  email     String   @unique @map("email")
+  avatarUrl String?  @map("avatar_url")
+  role      String   @default("user") @map("role")
+  isOnline  Boolean  @default(false) @map("is_online")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("users")
+  // RLS on with no policies: blocks the Supabase Data API; the app reaches it server-side only.
+  @@rls
+}
+
+model Channel {
+  id               Uuid     @id @default(uuid())
+  url              String   @unique
+  youtubeChannelId String   @unique @map("yt_channel_id")
+  name             String
+  description      String
+  thumbnailUrl     String   @map("thumbnail_url")
+  subscriberCount  BigInt   @map("subscriber_count")
+  viewCount        BigInt   @map("view_count")
+  videoCount       BigInt   @map("video_count")
+  lastSyncedAt     DateTime @default(now()) @map("last_synced_at")
+  isVerified       Boolean  @default(false) @map("is_verified")
+  tags             Json     @default("[]")
+  source           String   @default("seed")
+
+  ownerId Uuid? @map("owner_id")
+  owner   User? @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("channels")
+  // RLS on with no policies: blocks the Supabase Data API; the app reaches it server-side only.
+  @@rls
+}
+
+model ChannelSnapshot {
+  id              Uuid     @id @default(uuid())
+  subscriberCount BigInt   @map("subscriber_count")
+  viewCount       BigInt   @map("view_count")
+  recordedAt      DateTime @default(now()) @map("recorded_at")
+
+  channelId Uuid    @map("channel_id")
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@index([channelId])
+  @@map("channel_snapshots")
+}
+
+// Channels a user marked as favourite.
+model FavoriteChannel {
+  id Uuid @id @default(uuid())
+
+  userId Uuid @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  channelId Uuid    @map("channel_id")
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, channelId])
+  @@index([channelId])
+  @@map("favorite_channels")
+  // RLS on with no policies: blocks the Supabase Data API; the app reaches it server-side only.
+  @@rls
+}
+
+// Pending "link your YouTube channel" request: the user must put `code` in the channel description.
+model ChannelClaim {
+  id Uuid @id @default(uuid())
+
+  userId Uuid @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  youtubeChannelId String   @map("yt_channel_id")
+  code             String
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@map("channel_claims")
+  // RLS on with no policies: blocks the Supabase Data API; the app reaches it server-side only.
+  @@rls
+}
+
+// Direct (1:1) conversation between two users.
+model Conversation {
+  id Uuid @id @default(uuid())
+
+  userAId Uuid @map("user_a_id")
+  userBId Uuid @map("user_b_id")
+
+  userA User @relation("ConversationUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("ConversationUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  lastMessageAt DateTime? @map("last_message_at")
+
+  @@unique([userAId, userBId])
+  @@index([userBId])
+  @@map("conversations")
+}
+
+model Message {
+  id      Uuid   @id @default(uuid())
+  content String
+
+  conversationId Uuid         @map("conversation_id")
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  senderId Uuid @map("sender_id")
+  sender   User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+  @@map("messages")
+}
