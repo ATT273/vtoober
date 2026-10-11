@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrushCleaningIcon, HouseIcon, MenuIcon, RadioIcon, TvIcon, type LucideIcon } from "lucide-react";
+import { BrushCleaningIcon, HouseIcon, InfoIcon, MenuIcon, RadioIcon, TvIcon, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ const MENU_ITEMS: IMenuItem[] = [
   // Active for the whole /channel section: list and detail pages.
   { href: "/channel/list", label: "Channels", icon: TvIcon, activePrefix: "/channel" },
   { href: "/tools", label: "Tools", icon: BrushCleaningIcon },
+  { href: "/about", label: "About", icon: InfoIcon },
 ];
 
 // Auth screens are full-page flows without app navigation.
