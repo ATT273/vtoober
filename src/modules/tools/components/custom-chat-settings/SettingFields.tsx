@@ -1,16 +1,14 @@
 "use client";
 
-import React from "react";
-
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 import type { IChatBackground, PaddingSize } from "../../types/customChat.types";
 
 const PADDING_OPTIONS: { value: PaddingSize; label: string }[] = [
-  { value: "sm", label: "Small" },
-  { value: "md", label: "Medium" },
-  { value: "lg", label: "Large" },
+  { value: "sm", label: "Nhỏ" },
+  { value: "md", label: "Vừa" },
+  { value: "lg", label: "Lớn" },
 ];
 
 interface IColorFieldProps {
@@ -132,14 +130,14 @@ export const BackgroundField = ({ id, label, value, onChange }: IBackgroundField
     <ToggleField label={label} checked={value.enabled} onChange={(enabled) => onChange({ ...value, enabled })} />
     <ColorField
       id={`${id}-color`}
-      label="Background color"
+      label="Màu"
       value={value.color}
       disabled={!value.enabled}
       onChange={(color) => onChange({ ...value, color })}
     />
     <RangeField
       id={`${id}-opacity`}
-      label="Background opacity"
+      label="Độ đậm"
       valueLabel={`${value.opacity}%`}
       value={value.opacity}
       min={0}
@@ -148,7 +146,7 @@ export const BackgroundField = ({ id, label, value, onChange }: IBackgroundField
       onChange={(opacity) => onChange({ ...value, opacity })}
     />
     <SegmentedField
-      label="Padding"
+      label="Khoảng đệm"
       value={value.padding}
       options={PADDING_OPTIONS}
       disabled={!value.enabled}
