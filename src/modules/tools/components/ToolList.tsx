@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState } from "react";
-import { ChevronDownIcon, ChevronLeft } from "lucide-react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { ChevronLeft } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -67,13 +67,18 @@ const ToolList = () => {
         <div className="shrink-0">
           <div className="flex flex-row gap-2 items-center">
             {isChatExpanded && (
-              <button type="button" aria-label="Back to tools" onClick={handleToggle} className="cursor-pointer">
+              <button
+                type="button"
+                aria-label="Quay lại danh sách công cụ"
+                onClick={handleToggle}
+                className="cursor-pointer"
+              >
                 <ChevronLeft className="size-4" />
               </button>
             )}
-            <h3 className="text-lg font-semibold">Custom chat</h3>
+            <h3 className="text-lg font-semibold">Youtube chat</h3>
           </div>
-          <p className="font-medium text-gray-400">Create your own custom chat layout</p>
+          <p className="font-medium text-gray-400">Tạo giao diện chat theo phong cách của riêng bạn</p>
         </div>
         {/* <button
           type="button"
